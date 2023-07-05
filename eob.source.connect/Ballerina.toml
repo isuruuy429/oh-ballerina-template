@@ -1,0 +1,20 @@
+[package]
+org = "wso2healthcare"
+name = "eob.source.connect"
+version = "0.1.0"
+distribution = "2201.6.0"
+
+[build-options]
+observabilityIncluded = true
+
+[[dependency]]
+org = "ballerinax"
+name = "health.fhir.r4"
+version = "2.0.1"
+repository="local"
+
+[[dependency]]
+org = "ballerinax"
+name = "health.fhirr4"
+version = "2.0.1"
+repository="local"

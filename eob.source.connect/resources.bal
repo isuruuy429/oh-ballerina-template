@@ -1,4 +1,7 @@
-final json sampleEoB = {
+import ballerinax/health.fhir.r4 as r4;
+
+// const is not supported in Ballerina 6.x, hence we need to use this way
+isolated final r4:ExplanationOfBenefit sampleEoB = {
     "resourceType": "ExplanationOfBenefit",
     "id": "EB3500",
     "text": {
@@ -104,7 +107,7 @@ final json sampleEoB = {
     ]
 };
 
-final json sampleEoBAlt = {
+isolated final r4:ExplanationOfBenefit sampleEoBAlt = {
     "resourceType": "ExplanationOfBenefit",
     "id": "EB3501",
     "text": {
@@ -210,7 +213,19 @@ final json sampleEoBAlt = {
     ]
 };
 
-isolated table<record {|readonly string id; json jsonResource;|}> key(id) fhirResources = table [
-    {id: "uuid1", jsonResource: sampleEoB.cloneReadOnly()},
-    {id: "uuid2", jsonResource: sampleEoBAlt.cloneReadOnly()}
+isolated function getSampleEoB() returns r4:ExplanationOfBenefit {
+    lock {
+        return sampleEoB.cloneReadOnly();
+    }
+}
+
+isolated function getSampleEoBAlt() returns r4:ExplanationOfBenefit {
+    lock {
+        return sampleEoBAlt.cloneReadOnly();
+    }
+}
+
+isolated table<record {|readonly string id; r4:ExplanationOfBenefit fhirResource;|}> key(id) fhirResources = table [
+    {id: "uuid1", fhirResource: getSampleEoB()},
+    {id: "uuid2", fhirResource: getSampleEoBAlt()}
 ];

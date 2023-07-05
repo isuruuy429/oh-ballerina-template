@@ -1,5 +1,4 @@
-
-
+// Needs to be fixed properly
 # ExplanationOfBenefit Template
 
 ## Template Overview
@@ -17,8 +16,8 @@ This template provides a boilerplate code for rapid implementation of FHIR APIs 
 
 | Module | Version |
 | --- | --- |
-| wso2healthcare/healthcare.fhir.r4 | 0.1.13 |
-| wso2healthcare/healthcare.base | 0.1.3 |
+| ballerinax/health.fhir.r4 | 2.0.1 |
+| ballerinax/health.base | 2.0.1 |
 |
 
 This template includes,
