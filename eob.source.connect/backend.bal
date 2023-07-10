@@ -1,8 +1,8 @@
 import ballerina/log;
 import ballerina/http;
-import ballerina/url;
 import ballerina/uuid;
 import ballerinax/health.fhir.r4;
+import ballerina/io;
 
 listener http:Listener httpListener = new (9595);
 
@@ -18,15 +18,9 @@ service / on httpListener {
     isolated resource function get [string fhirType](string searchParams) returns r4:ExplanationOfBenefit[]|error {
 
         log:printInfo("[SEARCH] Backend Search operation invoked");
-        string paramsDecoded = check url:decode(searchParams, "UTF-8");
-        json|error parsed = paramsDecoded.fromJsonString();
-        map<r4:RequestSearchParameter[]> arr;
-        if parsed is map<json> {
-            arr = check parsed.cloneWithType();
-            //TODO handle search parameters
-            log:printInfo("Search parameters: " + arr.toString());
-        }
-
+        map<r4:RequestSearchParameter[]> arr = check r4:decodeFhirSearchParameters(searchParams);
+        // handle search parameters
+        io:println("Search parameters: ", arr.length());
         lock {
             r4:ExplanationOfBenefit[] eobs = [];
             foreach record {|readonly string id; r4:ExplanationOfBenefit fhirResource;|} item in fhirResources {

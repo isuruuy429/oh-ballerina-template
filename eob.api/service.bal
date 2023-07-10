@@ -53,7 +53,7 @@ service / on new fhir:Listener(9090, apiConfig) {
     returns @http:Payload {mediaType: ["application/fhir+json", "application/fhir+xml"]}
     r4:Bundle|r4:FHIRError {
         // url encode the search parameters
-        string|r4:FHIRError encodedParams = r4:getUrlEncodedSearchParameters(fhirContext.getRequestSearchParameters());
+        string|r4:FHIRError encodedParams = r4:urlEncodeFhirSearchParameters(fhirContext.getRequestSearchParameters());
         if encodedParams is r4:FHIRError {
             return encodedParams;
         }
