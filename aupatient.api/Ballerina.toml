@@ -1,0 +1,11 @@
+[package]
+org = "wso2healthcare"
+name = "aupatient.api"
+version = "0.2.3"
+distribution = "2201.6.0"
+authors = ["WSO2 Healthcare"]
+keywords = ["Healthcare", "FHIR", "Patient", "r4", "aubase"]
+template = true
+
+[build-options]
+observabilityIncluded = true
