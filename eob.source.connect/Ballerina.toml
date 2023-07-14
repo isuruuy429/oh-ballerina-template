@@ -12,7 +12,3 @@ org = "ballerinax"
 name = "health.fhir.r4"
 version = "3.0.0"
 
-[[dependency]]
-org = "ballerinax"
-name = "health.fhirr4"
-version = "2.0.1"

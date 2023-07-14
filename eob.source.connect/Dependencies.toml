@@ -343,12 +343,6 @@ dependencies = [
 	{org = "ballerina", name = "uuid"},
 	{org = "ballerinax", name = "health.base"}
 ]
-modules = [
-	{org = "ballerinax", packageName = "health.fhir.r4", moduleName = "health.fhir.r4"},
-	{org = "ballerinax", packageName = "health.fhir.r4", moduleName = "health.fhir.r4.parser"},
-	{org = "ballerinax", packageName = "health.fhir.r4", moduleName = "health.fhir.r4.terminology"},
-	{org = "ballerinax", packageName = "health.fhir.r4", moduleName = "health.fhir.r4.validator"}
-]
 
 [[package]]
 org = "ballerinax"
@@ -365,17 +359,24 @@ modules = [
 
 [[package]]
 org = "ballerinax"
-name = "mysql"
+name = "mssql"
 version = "1.9.0"
 dependencies = [
 	{org = "ballerina", name = "crypto"},
-	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "sql"},
 	{org = "ballerina", name = "time"}
 ]
 modules = [
-	{org = "ballerinax", packageName = "mysql", moduleName = "mysql"}
+	{org = "ballerinax", packageName = "mssql", moduleName = "mssql"}
+]
+
+[[package]]
+org = "ballerinax"
+name = "mssql.driver"
+version = "1.4.1"
+modules = [
+	{org = "ballerinax", packageName = "mssql.driver", moduleName = "mssql.driver"}
 ]
 
 [[package]]
@@ -386,9 +387,9 @@ dependencies = [
 	{org = "ballerina", name = "http"},
 	{org = "ballerina", name = "log"},
 	{org = "ballerinai", name = "observe"},
-	{org = "ballerinax", name = "health.fhir.r4"},
 	{org = "ballerinax", name = "health.fhir.r4.aubase410"},
-	{org = "ballerinax", name = "mysql"}
+	{org = "ballerinax", name = "mssql"},
+	{org = "ballerinax", name = "mssql.driver"}
 ]
 modules = [
 	{org = "wso2healthcare", packageName = "eob.source.connect", moduleName = "eob.source.connect"}
