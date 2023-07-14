@@ -1,231 +1,64 @@
-import ballerinax/health.fhir.r4 as r4;
+import ballerinax/health.fhir.r4.aubase410;
+import ballerinax/mssql;
+import ballerinax/mssql.driver as _;
+import ballerina/log;
 
-// const is not supported in Ballerina 6.x, hence we need to use this way
-isolated final r4:ExplanationOfBenefit sampleEoB = {
-    "resourceType": "ExplanationOfBenefit",
-    "id": "EB3500",
-    "text": {
-        "status": "generated",
-        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">A human-readable rendering of the ExplanationOfBenefit</div>"
-    },
-    "identifier": [
-        {
-            "system": "http://www.BenefitsInc.com/fhir/explanationofbenefit",
-            "value": "987654321"
-        }
-    ],
-    "status": "active",
-    "type": {
-        "coding": [
-            {
-                "system": "http://terminology.hl7.org/CodeSystem/claim-type",
-                "code": "oral"
-            }
-        ]
-    },
-    "use": "claim",
-    "patient": {
-        "reference": "Patient/pat1"
-    },
-    "created": "2014-08-16",
-    "enterer": {
-        "reference": "Practitioner/1"
-    },
-    "insurer": {
-        "reference": "Organization/3"
-    },
-    "provider": {
-        "reference": "Practitioner/1"
-    },
-    "payee": {
-        "type": {
-            "coding": [
-                {
-                    "system": "http://terminology.hl7.org/CodeSystem/payeetype",
-                    "code": "provider"
-                }
-            ]
-        },
-        "party": {
-            "reference": "Organization/2"
-        }
-    },
-    "facility": {
-        "reference": "Location/1"
-    },
-    "claim": {
-        "reference": "Claim/100150"
-    },
-    "claimResponse": {
-        "reference": "ClaimResponse/R3500"
-    },
-    "outcome": "complete",
-    "disposition": "Claim settled as per contract.",
-    "careTeam": [
-        {
-            "sequence": 1,
-            "provider": {
-                "reference": "Practitioner/example"
-            }
-        }
-    ],
-    "insurance": [
-        {
-            "focal": true,
-            "coverage": {
-                "reference": "Coverage/9876B1"
-            }
-        }
-    ],
-    "total": [
-        {
-            "category": {
-                "coding": [
-                    {
-                        "code": "submitted"
-                    }
-                ]
-            },
-            "amount": {
-                "value": 135.57,
-                "currency": "USD"
-            }
-        },
-        {
-            "category": {
-                "coding": [
-                    {
-                        "code": "benefit"
-                    }
-                ]
-            },
-            "amount": {
-                "value": 96.00,
-                "currency": "USD"
-            }
-        }
-    ]
+configurable string HOST = ?;
+configurable string USERNAME = ?;
+configurable string PASSWORD = ?;
+configurable string DATABASE = ?;
+configurable int PORT = ?;
+
+//The Patient record to interact with the database.
+public type Patient record {
+    string id;
+    string firstName;
+    string lastname;
+    string birthDate;
+    string gender;
+    string email;
+    string address_city;
+    string mobileNumber;
 };
 
-isolated final r4:ExplanationOfBenefit sampleEoBAlt = {
-    "resourceType": "ExplanationOfBenefit",
-    "id": "EB3501",
-    "text": {
-        "status": "generated",
-        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">A human-readable rendering of the ExplanationOfBenefit</div>"
-    },
-    "identifier": [
+final mssql:Client dbClient = check new (
+    HOST,
+    USERNAME,
+    PASSWORD,
+    DATABASE,
+    PORT
+);
+
+isolated function getPatient(string id) returns aubase410:AUBasePatient|error {
+    Patient patient = check dbClient->queryRow(`SELECT * FROM patient_details WHERE id = ${id}`);
+    aubase410:AUBasePatient transformResult = transform(patient);
+    log:printInfo(transformResult.toBalString());
+    return transformResult;
+}
+
+isolated function transform(Patient patient) returns aubase410:AUBasePatient => {
+    id: patient.id,
+    name: [
         {
-            "system": "http://www.BenefitsInc.com/fhir/explanationofbenefit",
-            "value": "987654321"
+            family: patient.lastname,
+            given: [patient.firstName]
         }
     ],
-    "status": "active",
-    "type": {
-        "coding": [
-            {
-                "system": "http://terminology.hl7.org/CodeSystem/claim-type",
-                "code": "oral"
-            }
-        ]
-    },
-    "use": "claim",
-    "patient": {
-        "reference": "Patient/pat2"
-    },
-    "created": "2014-08-16",
-    "enterer": {
-        "reference": "Practitioner/1"
-    },
-    "insurer": {
-        "reference": "Organization/3"
-    },
-    "provider": {
-        "reference": "Practitioner/1"
-    },
-    "payee": {
-        "type": {
-            "coding": [
-                {
-                    "system": "http://terminology.hl7.org/CodeSystem/payeetype",
-                    "code": "provider"
-                }
-            ]
-        },
-        "party": {
-            "reference": "Organization/2"
-        }
-    },
-    "facility": {
-        "reference": "Location/1"
-    },
-    "claim": {
-        "reference": "Claim/100150"
-    },
-    "claimResponse": {
-        "reference": "ClaimResponse/R3500"
-    },
-    "outcome": "complete",
-    "disposition": "Claim settled as per contract.",
-    "careTeam": [
+    birthDate: patient.birthDate,
+    address: [
         {
-            "sequence": 1,
-            "provider": {
-                "reference": "Practitioner/example"
-            }
+            city: patient.address_city
         }
     ],
-    "insurance": [
+    telecom: [
         {
-            "focal": true,
-            "coverage": {
-                "reference": "Coverage/9876B1"
-            }
-        }
-    ],
-    "total": [
-        {
-            "category": {
-                "coding": [
-                    {
-                        "code": "submitted"
-                    }
-                ]
-            },
-            "amount": {
-                "value": 135.57,
-                "currency": "USD"
-            }
+            system: "email",
+            value: patient.email
         },
         {
-            "category": {
-                "coding": [
-                    {
-                        "code": "benefit"
-                    }
-                ]
-            },
-            "amount": {
-                "value": 96.00,
-                "currency": "USD"
-            }
+            system: "phone",
+            value: patient.mobileNumber
         }
     ]
+
 };
-
-isolated function getSampleEoB() returns r4:ExplanationOfBenefit {
-    lock {
-        return sampleEoB.cloneReadOnly();
-    }
-}
-
-isolated function getSampleEoBAlt() returns r4:ExplanationOfBenefit {
-    lock {
-        return sampleEoBAlt.cloneReadOnly();
-    }
-}
-
-isolated table<record {|readonly string id; r4:ExplanationOfBenefit fhirResource;|}> key(id) fhirResources = table [
-    {id: "uuid1", fhirResource: getSampleEoB()},
-    {id: "uuid2", fhirResource: getSampleEoBAlt()}
-];
